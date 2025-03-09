@@ -1,19 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const db = require('mongoose');
 const app = express();
-const MainRouter = require('./routes');
+const MainRouter = require('./src/routes');
 require('dotenv').config();
 
-// connect to the database
-db.connect(process.env.MONGO_DB_URL);
-const database = db.connection;
-database.on('error', console.error.bind(console, 'connection error:'));
-database.once('open', () => {
-  console.log('Database connected');
-});
+// Require the database configuration file to establish the connection
+require('./src/config/db');
 
 app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+  console.log("LOOGING REQUEST");
+  console.log('Request URL:', req.url);
+  console.log('Request Method:', req.method);
+  next();
+});
+
 app.use(MainRouter);
 
 app.listen(process.env.PORT, () => {

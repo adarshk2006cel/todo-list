@@ -2,8 +2,6 @@ const express = require('express');
 
 const MainRouter = express.Router();
 
-MainRouter.get('/', (req, res) => {
-  res.send('Hello Adarsh!');
-});
+MainRouter.use('/api/tasks', require('./tasks'));
 
 module.exports = MainRouter;
