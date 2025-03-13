@@ -1,13 +1,17 @@
 const { Router } = require('express');
 const randomString = require('randomstring');
 
+const { status } = require('../../utils/constants');
 // import a custom schema from models
 const taskSchema = require('../../models/tasks');
+const { validateToken } = require('../../utils/middlewares');
 
 const MainRouter = Router();
 
 MainRouter.route('/')
-  .get(async (req, res) => {
+  .get(
+    validateToken,
+    async (req, res) => {
     const { status, sort } = req.query;
     const filter = {};
     const sortOptions = {};
@@ -38,7 +42,9 @@ MainRouter.route('/')
       res.status(500).json({ message: error.message })
     }
   })
-  .post(async (req, res) => {
+  .post(
+    validateToken,
+    async (req, res) => {
     let body = req.body;
     let newTask = new taskSchema({
       title: body.title,
@@ -54,7 +60,9 @@ MainRouter.route('/')
   });
 
 MainRouter.route('/:id')
-  .get(async (req, res) => {
+  .get(
+    validateToken,
+    async (req, res) => {
     try {
       const task = await taskSchema.findById(req.params.id);
       if (!task) {
@@ -65,7 +73,9 @@ MainRouter.route('/:id')
       res.status(500).json({ message: error.message });
     }
   })
-  .patch(async (req, res) => {
+  .patch(
+    validateToken,
+    async (req, res) => {
     try {
       const updatedTask = await taskSchema.findByIdAndUpdate(
         req.params.id,
@@ -80,7 +90,9 @@ MainRouter.route('/:id')
       res.status(400).json({ message: error.message });
     }
   })
-  .delete(async (req, res) => {
+  .delete(
+    validateToken,
+    async (req, res) => {
     try {
       const deletedTask = await taskSchema.findByIdAndDelete(req.params.id);
       if (!deletedTask) {
@@ -93,7 +105,9 @@ MainRouter.route('/:id')
   });
 
 MainRouter.route('/random')
-  .post(async (req, res) => {
+  .post(
+    validateToken,
+    async (req, res) => {
     const title = randomString.generate({
       length: 10,
       charset: 'alphabetic',
@@ -102,7 +116,6 @@ MainRouter.route('/random')
       length: 25,
       charset: 'alphabetic',
     });
-    const status = ['Pending', 'In Progress', 'Completed'];
     const randomStatus = status[Math.floor(Math.random() * status.length)];
 
     const newTask = new taskSchema({

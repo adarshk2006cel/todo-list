@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { status } = require('../utils/constants');
 
 const taskSchema = new mongoose.Schema({
   title: {
@@ -10,7 +11,7 @@ const taskSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pending', 'In Progress', 'Completed'],
+    enum: status,
     default: 'Pending',
   },
   createdAt: {

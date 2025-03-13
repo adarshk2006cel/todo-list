@@ -6,15 +6,11 @@ require('dotenv').config();
 
 // Require the database configuration file to establish the connection
 require('./src/config/db');
+const middleware = require('./src/utils/middlewares');
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  console.log("LOOGING REQUEST");
-  console.log('Request URL:', req.url);
-  console.log('Request Method:', req.method);
-  next();
-});
+app.use(middleware.logInfo);
 
 app.use(MainRouter);
 
